@@ -1,1 +1,7 @@
 ---
+- name: Include {{ wg_start_method }} startup tasks
+  ansible.builtin.include_tasks:
+    file: "enable/{{ wg_start_method }}.yml"
+    apply:
+      tags:
+        wireguard_enable

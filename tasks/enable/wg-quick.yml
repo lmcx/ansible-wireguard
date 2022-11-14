@@ -1,0 +1,19 @@
+---
+- name: Get services facts
+  ansible.builtin.service_facts:
+  register: services_facts
+
+- name: Register service facts
+  ansible.builtin.set_fact:
+    services_facts: "{{ services_facts.ansible_facts.services }}"
+
+- name: Systemd daemon reload
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Loop on interfaces
+  ansible.builtin.include_tasks:
+    file: wg-quick/loop.yml
+  loop: "{{ wg_config.keys()|list }}"
+  loop_control:
+    loop_var: ifname
