@@ -1,0 +1,9 @@
+---
+- name: Debug (NM)
+  debug:
+    msg: "wg_start_method : {{ wg_start_method }}"
+
+- name: Include gen key tasks
+  ansible.builtin.include_tasks:
+    file: genkey.yml
+  loop: "{{ wg_config.keys()|list }}"

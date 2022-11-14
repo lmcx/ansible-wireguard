@@ -1,0 +1,17 @@
+---
+- name: Get interface configuration
+  ansible.builtin.set_fact:
+    wg_if: "{{ wg_config[item] }}"
+    wg_if_name: "{{ item }}"
+  tags:
+    - wireguard_configure
+
+- name: Apply configuration template
+  ansible.builtin.template:
+    src: "wg.conf.j2"
+    dest: "{{ wg_conf_directory }}/{{ item }}.conf"
+    owner: "root"
+    group: "root"
+    mode: 0640
+  tags:
+    - wireguard_configure

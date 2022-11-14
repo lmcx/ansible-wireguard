@@ -1,0 +1,10 @@
+---
+- name: Include gen key tasks
+  ansible.builtin.include_tasks:
+    file: genkey.yml
+  loop: "{{ wg_config.keys()|list }}"
+
+- name: Include gen conf tasks
+  ansible.builtin.include_tasks:
+    file: wg-quick/genconf.yml
+  loop: "{{ wg_config.keys()|list }}"

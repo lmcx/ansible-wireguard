@@ -1,0 +1,35 @@
+galaxy_info:
+  author: Loïc Michaux
+  description: Ansible role for Wireguard VPN
+
+  issue_tracker_url: https://github.com/lmcx/ansible-wireguard/issues
+
+  license: MIT
+
+  min_ansible_version: 2.1
+
+  platforms:
+    - name: Fedora
+      versions:
+        - 22
+        - 23
+        - 24
+        - 25
+        - 26
+        - 27
+        - 28
+        - 29
+        - 30
+        - 31
+        - 32
+        - 33
+        - 34
+        - 35
+    - name: EL
+      versions:
+        - 8
+        - 9
+
+  galaxy_tags: [networking, security, vpn, wireguard]
+
+dependencies: []

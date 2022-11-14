@@ -1,0 +1,106 @@
+# {{ ansible_managed }}
+# {{ wg_if_name }}
+
+[Interface]
+Address = {{ wg_if.address }}
+PrivateKey = {{ wg_if.private_key }}
+ListenPort = {{ wg_if.port }}
+{% if wg_if.dns is defined %}
+DNS = {{ wg_if.dns }}
+{% endif %}
+{% if wg_if.fwmark is defined %}
+FwMark = {{ wg_if.fwmark }}
+{% endif %}
+{% if wg_if.mtu is defined %}
+MTU = {{ wg_if.mtu }}
+{% endif %}
+{% if wg_if.table is defined %}
+Table = {{ wg_if.table }}
+{% endif %}
+{% if wg_if.preup is defined %}
+{% for preup_line in wg_if.preup %}
+PreUp = {{ preup_line }}
+{% endfor %}
+{% endif %}
+{% if wg_if.postup is defined %}
+{% for postup_line in wg_if.postup %}
+PostUp = {{ postup_line }}
+{% endfor %}
+{% endif %}
+{% if wg_if.predown is defined %}
+{% for predown_line in wg_if.predown %}
+PreDown = {{ predown_line }}
+{% endfor %}
+{% endif %}
+{% if wg_if.postdown is defined %}
+{% for postdown_line in wg_if.postdown %}
+PostDown = {{ postdown_line }}
+{% endfor %}
+{% endif %}
+{% if wg_if.save_config is defined %}
+SaveConfig = {{ wg_if.save_config }}
+{% endif %}
+{% for host in ansible_play_hosts %}
+{%   if host != inventory_hostname %}
+{%     if "wg_config" in hostvars[host] and wg_if_name in host_wg_config %}
+{%       set host_wg_config = hostvars[host]["wg_config"][wg_if_name] %}
+
+[Peer]
+# {{ host }}
+PublicKey = {{ host_wg_config["public_key"] }}
+{# {%       if "psk" in host_wg_config  and host_wg_config["psk"] != false and host_wg_config["psk"] != "" %}
+PresharedKey = {{ host_wg_config["psk"] }}
+{%       endif %} #}  {# TODO #}
+{%       if "allowed_ips" in host_wg_config %}
+AllowedIPs = {{ host_wg_config["allowed_ips"] }}
+{%       else %}
+AllowedIPs = {{ host_wg_config["address"].split('/')[0] }}/32
+{%       endif %}
+{%       if "persistent_keepalive" in host_wg_config %}
+PersistentKeepalive = {{ host_wg_config["persistent_keepalive"] }}
+{%       endif %}
+{%       if (
+           "dc" in host_wg_config and
+           wg_if["dc"] is defined and
+           wg_if["dc"]["name"] != host_wg_config["dc"]['name']
+         )
+%}
+Endpoint = {{ host_wg_config["dc"]["endpoint"] }}:{{ host_wg_config["dc"]['port'] }}
+{%       elif "port" in host_wg_config %}
+{%         if "endpoint" in host_wg_config and host_wg_config["endpoint"] != "" %}
+Endpoint = {{ host_wg_config["endpoint"] }}:{{ host_wg_config["port"] }}
+{%         else %}
+Endpoint = {{ host }}:{{ host_wg_config["port"] }}
+{%         endif %}
+{%       elif "endpoint" in host_wg_config %}
+{%         if host_wg_config["endpoint"] != "" %}
+Endpoint = {{ host_wg_config["endpoint"] }}:{{ wg_if.port }}
+{%         else %}
+# No endpoint defined for this peer
+{%         endif %}
+{%       else %}
+Endpoint = {{ host }}:{{ wg_if.port }}
+{%       endif %}
+{%     endif %}
+{%   endif %}
+{% endfor %}
+{% if "unmanaged_peers" in wg_if %}
+{%   for peer in wg_if["unmanaged_peers"].keys() %}
+
+[Peer]
+# {{ peer }}
+PublicKey = {{ wg_if["unmanaged_peers"][peer]["public_key"] }}
+{# {%     if "psk" in wg_if.unmanaged_peers[peer] and wg_if.unmanaged_peers[peer]["psk"] != false and wg_if.unmanaged_peers[peer]["psk"] != "" %}
+PresharedKey = {{ wg_if["unmanaged_peers"][peer]["psk"] }}
+{%     endif %} #} {# TODO #}
+{%     if "allowed_ips" in wg_if.unmanaged_peers[peer] %}
+AllowedIPs = {{ wg_if["unmanaged_peers"][peer]["allowed_ips"] }}
+{%     endif %}
+{%     if "endpoint" in wg_if.unmanaged_peers[peer] %}
+Endpoint = {{ wg_if["unmanaged_peers"][peer]["endpoint"] }}
+{%     endif %}
+{%     if "persistent_keepalive" in wg_if["unmanaged_peers"][peer] %}
+PersistentKeepalive = {{ wg_if["unmanaged_peers"][peer]["persistent_keepalive"] }}
+{%     endif %}
+{%   endfor %}
+{% endif %}

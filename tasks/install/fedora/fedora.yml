@@ -1,0 +1,5 @@
+---
+- name: "[Fedora] (dnf) Install wireguard-tools"
+  ansible.builtin.dnf:
+    name: "wireguard-tools"
+    state: present
