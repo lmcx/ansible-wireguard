@@ -1,5 +1,5 @@
-Role Name
-=========
+Ansible Role: Wireguard
+=======================
 
 An Ansible role that installs and configures [Wireguard](https://www.wireguard.com/) VPN.
 
