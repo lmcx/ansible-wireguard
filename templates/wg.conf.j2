@@ -48,7 +48,7 @@ SaveConfig = {{ wg_if.save_config }}
 [Peer]
 # {{ host }}
 PublicKey = {{ host_wg_config["public_key"] }}
-{# {%         if "psk" in host_wg_config  and host_wg_config["psk"] != false and host_wg_config["psk"] != "" %}
+{# {%         if "psk" in host_wg_config and host_wg_config["psk"] != false and host_wg_config["psk"] != "" %}
 PresharedKey = {{ host_wg_config["psk"] }}
 {%       endif %} #}  {# TODO #}
 {%         if "allowed_ips" in host_wg_config %}

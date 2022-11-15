@@ -1,0 +1,50 @@
+# {{ ansible_managed }}
+# {{ wg_if_name }}
+
+[connection]
+id={{ wg_if_name }}
+uuid={{ string | to_uuid }}
+type=wireguard
+interface-name={{ wg_if_name }}
+
+[wireguard]
+fwmark={{ wg_if.fwmark }}
+listen-port={{ wg_if.port }}
+mtu={{ wg_if.mtu }}
+private-key={{ wg_if.private_key }}
+{% for host in ansible_play_hosts %}
+{%   if host != inventory_hostname %}
+{%     if "wg_config" in hostvars[host] %}
+{%       set host_wg_config = hostvars[host]["wg_config"][wg_if_name] %}
+{%       if wg_if_name in host_wg_config %}
+
+[wireguard-peer{{ host_wg_config["public_key"] }}]
+endpoint={{ host_wg_config["endpoint"] }}:{{ host_wg_config["port"] }} {# TODO: Handle "dc", empty "endpoint", ... #}
+{#{%         if "psk" in host_wg_config and host_wg_config["psk"] != false and host_wg_config["psk"] != "" %}
+preshared-key=ywS/YzzSds0wIIyXwkZRYhv+0dHrfEGPfmFocLmY+b8=
+preshared-key-flags=0
+{%           endif %} #} {# TODO #}
+{%         if "persistent_keepalive" in host_wg_config %}
+persistent-keepalive={{ host_wg_config["persistent_keepalive"] }}
+{%         endif %}
+{%         if "allowed_ips" in host_wg_config %}
+allowed-ips={{ host_wg_config["allowed_ips"] }};
+{%         endif %}
+{%       endif %}
+{%     endif %}
+{%   endif %}
+{% endfor %}
+
+[ipv4]
+address1={{ wg_if.address }}
+dns={{ wg_if.dns }};
+dns-search=~;
+method=manual
+route-table={{ wg_if.table }}
+
+[ipv6]
+addr-gen-mode=stable-privacy
+method=disabled
+route-table={{ wg_if.table }}
+
+[proxy]
