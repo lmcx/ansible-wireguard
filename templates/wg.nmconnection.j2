@@ -21,7 +21,7 @@ private-key={{ wg_if.private_key }}
 [wireguard-peer{{ host_wg_config["public_key"] }}]
 endpoint={{ host_wg_config["endpoint"] }}:{{ host_wg_config["port"] }} {# TODO: Handle "dc", empty "endpoint", ... #}
 {#{%         if "psk" in host_wg_config and host_wg_config["psk"] != false and host_wg_config["psk"] != "" %}
-preshared-key=ywS/YzzSds0wIIyXwkZRYhv+0dHrfEGPfmFocLmY+b8=
+preshared-key= {# Pre Shared Key #}
 preshared-key-flags=0
 {%           endif %} #} {# TODO #}
 {%         if "persistent_keepalive" in host_wg_config %}
