@@ -1,0 +1,23 @@
+---
+- name: Get interface configuration
+  ansible.builtin.set_fact:
+    wg_if: "{{ wg_config[item] }}"
+    wg_if_name: "{{ item }}"
+  tags:
+    wireguard_configure
+
+- name: Set interface UUID
+  ansible.builtin.set_fact:
+    wg_config: "{{ wg_config|combine({ item: wg_config[item]|combine({ 'uuid': item | to_uuid }) })}}"
+  tags:
+    wireguard_configure
+
+- name: Apply configuration template
+  ansible.builtin.template:
+    src: "wg.nmconnection.j2"
+    dest: "/etc/NetworkManager/system-connections/{{ item }}.nmconnection"
+    owner: "root"
+    group: "root"
+    mode: 0600
+  tags:
+    wireguard_configure

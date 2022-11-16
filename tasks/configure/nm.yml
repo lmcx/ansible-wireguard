@@ -8,3 +8,8 @@
   ansible.builtin.include_tasks:
     file: nm/genconf.yml
   loop: "{{ wg_config.keys()|list }}"
+
+- name: Include dispatching tasks
+  ansible.builtin.include_tasks:
+    file: nm/dispatcher.yml
+  loop: "{{ wg_config.keys()|list }}"

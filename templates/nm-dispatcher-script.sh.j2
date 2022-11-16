@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+# {{ ansible_managed }}
+
+action="${2}"
+uuid="${CONNECTION_UUID}"
+
+if [[ "$action" == "{{ wg_dispatch_action }}" && "$uuid" == "{{ wg_if_uuid }}" ]]; then
+{% for line in wg_action_script %}
+    {{ line }}
+{% endfor %}
+fi
+
+exit 0

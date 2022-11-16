@@ -1,0 +1,80 @@
+---
+- name: Prepare pre-up dispatcher for interface '{{ item }}'
+  ansible.builtin.set_fact:
+    wg_dispatch_action: "pre-up"
+    wg_action_script: "{{ wg_config[item]['preup'] }}"
+    wg_if_uuid: "{{ wg_config[item]['uuid']}}"
+  when: ("preup" in wg_config[item])
+  tags:
+    wireguard_configure
+
+- name: Install pre-up dispatcher for interface '{{ item }}'
+  ansible.builtin.template:
+    src: "nm-dispatcher-script.sh.j2"
+    dest: "/etc/NetworkManager/dispatcher.d/pre-up.d/10-{{ item }}-preup.sh"
+    owner: "root"
+    group: "root"
+    mode: 0744
+  when: ("preup" in wg_config[item])
+  tags:
+    wireguard_configure
+
+- name: Prepare post-up dispatcher for interface '{{ item }}'
+  ansible.builtin.set_fact:
+    wg_dispatch_action: "up"
+    wg_action_script: "{{ wg_config[item]['postup'] }}"
+    wg_if_uuid: "{{ wg_config[item]['uuid']}}"
+  when: ("postup" in wg_config[item])
+  tags:
+    wireguard_configure
+
+- name: Install post-up dispatcher for interface '{{ item }}'
+  ansible.builtin.template:
+    src: "nm-dispatcher-script.sh.j2"
+    dest: "/etc/NetworkManager/dispatcher.d/10-{{ item }}-postup.sh"
+    owner: "root"
+    group: "root"
+    mode: 0744
+  when: ("postup" in wg_config[item])
+  tags:
+    wireguard_configure
+
+- name: Prepare pre-down dispatcher for interface '{{ item }}'
+  ansible.builtin.set_fact:
+    wg_dispatch_action: "pre-down"
+    wg_action_script: "{{ wg_config[item]['predown'] }}"
+    wg_if_uuid: "{{ wg_config[item]['uuid']}}"
+  when: ("predown" in wg_config[item])
+  tags:
+    wireguard_configure
+
+- name: Install pre-down dispatcher for interface '{{ item }}'
+  ansible.builtin.template:
+    src: "nm-dispatcher-script.sh.j2"
+    dest: "/etc/NetworkManager/dispatcher.d/pre-down.d/10-{{ item }}-predown.sh"
+    owner: "root"
+    group: "root"
+    mode: 0744
+  when: ("predown" in wg_config[item])
+  tags:
+    wireguard_configure
+
+- name: Prepare post-down dispatcher for interface '{{ item }}'
+  ansible.builtin.set_fact:
+    wg_dispatch_action: "down"
+    wg_action_script: "{{ wg_config[item]['postdown'] }}"
+    wg_if_uuid: "{{ wg_config[item]['uuid']}}"
+  when: ("postdown" in wg_config[item])
+  tags:
+    wireguard_configure
+
+- name: Install post-down dispatcher for interface '{{ item }}'
+  ansible.builtin.template:
+    src: "nm-dispatcher-script.sh.j2"
+    dest: "/etc/NetworkManager/dispatcher.d/10-{{ item }}-postdown.sh"
+    owner: "root"
+    group: "root"
+    mode: 0744
+  when: ("postdown" in wg_config[item])
+  tags:
+    wireguard_configure
