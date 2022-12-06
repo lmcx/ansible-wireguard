@@ -13,3 +13,6 @@
   ansible.builtin.include_tasks:
     file: nm/dispatcher.yml
   loop: "{{ wg_config.keys()|list }}"
+
+- name: Reload connections
+  ansible.builtin.command: nmcli c reload
