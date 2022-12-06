@@ -1,0 +1,14 @@
+---
+- name: Enable wireguard connections with NetworkManager
+  ansible.builtin.include_tasks:
+    file: nm/enable.yml
+  loop: "{{ wg_config.keys()|list }}"
+  loop_control:
+    loop_var: ifname
+
+- name: Start wireguard connections with NetworkManager
+  ansible.builtin.include_tasks:
+    file: nm/start.yml
+  loop: "{{ wg_config.keys()|list }}"
+  loop_control:
+    loop_var: ifname
