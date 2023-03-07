@@ -18,7 +18,7 @@
 
 - name: Register new private key
   ansible.builtin.set_fact:
-    __wg_if_config: "{{ __wg_if_config|combine({'private_key': __wg_tmp_private_key.stdout}) }}"
+    __wg_if_config: "{{ __wg_if_config | combine({'private_key': __wg_tmp_private_key.stdout}) }}"
   tags:
     - wireguard_generate_keys
     - wireguard_configure
@@ -40,7 +40,7 @@
 
 - name: Register public key
   ansible.builtin.set_fact:
-    __wg_if_config: "{{ __wg_if_config|combine({'public_key': __wg_tmp_public_key.stdout}) }}"
+    __wg_if_config: "{{ __wg_if_config | combine({'public_key': __wg_tmp_public_key.stdout}) }}"
   tags:
     - wireguard_generate_keys
     - wireguard_configure
@@ -49,7 +49,7 @@
 
 - name: Save new configuration
   ansible.builtin.set_fact:
-    wg_config: "{{ wg_config|combine({ item: __wg_if_config })}}"
+    wg_config: "{{ wg_config | combine({ item: __wg_if_config })}}"
   tags:
     - wireguard_generate_keys
     - wireguard_configure
