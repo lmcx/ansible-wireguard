@@ -3,15 +3,15 @@
   ansible.builtin.set_fact:
     if_config: "{{ wg_config[ifname] }}"
 
-- name: Enable interface '{{ ifname }}' if necessary
+- name: Enable interface '{{ ifname }}'
   ansible.builtin.command: nmcli connection modify '{{ ifname }}' connection.autoconnect yes
   when: ("enable" in if_config) and (if_config["enable"] == true)
 
-- name: Disable interface '{{ ifname }}' if necessary
+- name: Disable interface '{{ ifname }}'
   ansible.builtin.command: nmcli connection modify '{{ ifname }}' connection.autoconnect no
   when: ("enable" in if_config) and (if_config["enable"] == false)
 
-# - name: Enable interface '{{ ifname }}' if necessary
+# - name: Enable interface '{{ ifname }}'
 #   ansible.builtin.nmcli:
 #     conn_name: "{{ ifname }}"
 #     autoconnect: "{{ if_config['enable'] }}"
