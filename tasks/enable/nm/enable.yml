@@ -1,5 +1,5 @@
 ---
-- name: Set interface '{{ ifname }}' facts
+- name: Set facts for interface '{{ ifname }}'
   ansible.builtin.set_fact:
     if_config: "{{ wg_config[ifname] }}"
 

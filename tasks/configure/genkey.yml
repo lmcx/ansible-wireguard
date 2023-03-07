@@ -49,7 +49,7 @@
 
 - name: Save new configuration
   ansible.builtin.set_fact:
-    wg_config: "{{ wg_config | combine({ item: __wg_if_config })}}"
+    wg_config: "{{ wg_config | combine({item: __wg_if_config}) }}"
   tags:
     - wireguard_generate_keys
     - wireguard_configure
