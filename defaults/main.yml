@@ -1,0 +1,2 @@
+---
+wg_start_method: "wg-quick" # TODO: System specific configuration (e.g.: nm for Fedora, ...)
