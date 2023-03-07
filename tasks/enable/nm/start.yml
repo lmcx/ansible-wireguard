@@ -8,5 +8,5 @@
   when: ("start" in if_config) and (if_config["start"] | bool)
 
 - name: Stop interface '{{ ifname }}'
-  ansible.builtin.command: nmcli c up '{{ ifname }}'
-  when: ("start" in if_config) and (if_config["start"] | bool)
+  ansible.builtin.command: nmcli c down '{{ ifname }}'
+  when: ("start" in if_config) and not (if_config["start"] | bool)
