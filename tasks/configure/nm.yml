@@ -16,3 +16,4 @@
 
 - name: Reload connections
   ansible.builtin.command: nmcli c reload
+  changed_when: false

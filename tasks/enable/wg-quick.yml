@@ -14,6 +14,6 @@
 - name: Loop on interfaces
   ansible.builtin.include_tasks:
     file: wg-quick/loop.yml
-  loop: "{{ wg_config.keys()|list }}"
+  loop: "{{ wg_config.keys() | list }}"
   loop_control:
     loop_var: ifname

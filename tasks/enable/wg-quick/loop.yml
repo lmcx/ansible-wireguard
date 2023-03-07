@@ -8,18 +8,18 @@
   ansible.builtin.systemd:
     name: wg-quick@{{ ifname }}.service
     enabled: yes
-  when: ("enable" in if_config) and (if_config["enable"] == true)
+  when: ("enable" in if_config) and (if_config["enable"] | bool)
 
 - name: "[wg-quick] Reload interface '{{ ifname }}'"
   ansible.builtin.systemd:
     name: "{{ service_name }}"
     state: reloaded
-  when: ("start" in if_config) and (if_config["start"] == true) and
+  when: ("start" in if_config) and (if_config["start"] | bool) and
     ( (service_name in services_facts) and (services_facts[service_name].state == "running") )
 
 - name: "[wg-quick] Start interface '{{ ifname }}'"
   ansible.builtin.systemd:
     name: "{{ service_name }}"
     state: started
-  when: ("start" in if_config) and (if_config["start"] == true) and
+  when: ("start" in if_config) and (if_config["start"] | bool) and
     ( (service_name not in services_facts) or (services_facts[service_name].state != "running") )

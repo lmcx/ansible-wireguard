@@ -6,10 +6,12 @@
 - name: Enable interface '{{ ifname }}'
   ansible.builtin.command: nmcli connection modify '{{ ifname }}' connection.autoconnect yes
   when: ("enable" in if_config) and (if_config["enable"] | bool)
+  changed_when: false
 
 - name: Disable interface '{{ ifname }}'
   ansible.builtin.command: nmcli connection modify '{{ ifname }}' connection.autoconnect no
   when: ("enable" in if_config) and not (if_config["enable"] | bool)
+  changed_when: false
 
 # - name: Enable interface '{{ ifname }}'
 #   ansible.builtin.nmcli:
