@@ -3,6 +3,7 @@
   ansible.builtin.include_tasks:
     file: genkey.yml
   loop: "{{ wg_config.keys() | list }}"
+  when: 
 
 - name: Include gen conf tasks
   ansible.builtin.include_tasks:
