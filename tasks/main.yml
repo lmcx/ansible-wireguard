@@ -1,4 +1,12 @@
 ---
-- include_tasks: install.yml
-- include_tasks: configure.yml
-- include_tasks: enable.yml
+- name: Gather facts
+  ansible.builtin.gather_facts:
+
+- name: Include installation tasks
+  include_tasks: install.yml
+
+- name: Include configuration tasks
+  include_tasks: configure.yml
+
+- name: Include service enabling tasks
+  include_tasks: enable.yml
