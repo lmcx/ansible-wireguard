@@ -1,5 +1,5 @@
 ---
-- name: Include {{ wg_start_method }} startup tasks
+- name: "Include startup tasks for {{ wg_start_method }}"
   ansible.builtin.include_tasks:
     file: "enable/{{ wg_start_method }}.yml"
     apply:
