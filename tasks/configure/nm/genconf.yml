@@ -8,7 +8,7 @@
 
 - name: Set interface UUID
   ansible.builtin.set_fact:
-    wg_config: "{{ wg_config|combine({ item: wg_config[item]|combine({ 'uuid': item | to_uuid }) })}}"
+    wg_config: "{{ wg_config | combine({ item: wg_config[item]|combine({ 'uuid': item | to_uuid }) })}}"
   tags:
     wireguard_configure
 

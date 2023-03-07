@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     wg_dispatch_action: "pre-up"
     wg_action_script: "{{ wg_config[item]['preup'] }}"
-    wg_if_uuid: "{{ wg_config[item]['uuid']}}"
+    wg_if_uuid: "{{ wg_config[item]['uuid'] }}"
   when: ("preup" in wg_config[item])
   tags:
     wireguard_configure
@@ -23,7 +23,7 @@
   ansible.builtin.set_fact:
     wg_dispatch_action: "up"
     wg_action_script: "{{ wg_config[item]['postup'] }}"
-    wg_if_uuid: "{{ wg_config[item]['uuid']}}"
+    wg_if_uuid: "{{ wg_config[item]['uuid'] }}"
   when: ("postup" in wg_config[item])
   tags:
     wireguard_configure
@@ -43,7 +43,7 @@
   ansible.builtin.set_fact:
     wg_dispatch_action: "pre-down"
     wg_action_script: "{{ wg_config[item]['predown'] }}"
-    wg_if_uuid: "{{ wg_config[item]['uuid']}}"
+    wg_if_uuid: "{{ wg_config[item]['uuid'] }}"
   when: ("predown" in wg_config[item])
   tags:
     wireguard_configure
@@ -63,7 +63,7 @@
   ansible.builtin.set_fact:
     wg_dispatch_action: "down"
     wg_action_script: "{{ wg_config[item]['postdown'] }}"
-    wg_if_uuid: "{{ wg_config[item]['uuid']}}"
+    wg_if_uuid: "{{ wg_config[item]['uuid'] }}"
   when: ("postdown" in wg_config[item])
   tags:
     wireguard_configure
