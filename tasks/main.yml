@@ -3,10 +3,10 @@
   ansible.builtin.gather_facts:
 
 - name: Include installation tasks
-  include_tasks: install.yml
+  ansible.builtin.include_tasks: install.yml
 
 - name: Include configuration tasks
-  include_tasks: configure.yml
+  ansible.builtin.include_tasks: configure.yml
 
 - name: Include service enabling tasks
-  include_tasks: enable.yml
+  ansible.builtin.include_tasks: enable.yml
