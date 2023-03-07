@@ -1,6 +1,8 @@
 Ansible Role: Wireguard
 =======================
 
+![CI](https://github.com/lmcx/ansible-wireguard/actions/workflows/ci.yml/badge.svg?branch=develop)
+
 An Ansible role that installs and configures [Wireguard](https://www.wireguard.com/) VPN.
 
 Requirements
