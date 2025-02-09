@@ -1,5 +1,6 @@
 # {{ ansible_managed }}
 # {{ wg_if_name }}
+# {{ wg_if }}
 
 [connection]
 id={{ wg_if_name }}
@@ -17,7 +18,7 @@ mtu={{ wg_if.mtu }}
 {% endif %}
 private-key={{ wg_if.private_key }}
 {% for host in ansible_play_hosts %}
-{# {%   if host != inventory_hostname %} #}
+{%   if host != inventory_hostname %}
 {%     if "wg_config" in hostvars[host] and wg_if_name in hostvars[host]["wg_config"] %}
 {%       set host_wg_config = hostvars[host]["wg_config"][wg_if_name] %}
 
@@ -35,8 +36,39 @@ persistent-keepalive={{ host_wg_config["persistent_keepalive"] }}
 allowed-ips={{ host_wg_config["allowed_ips"] }};
 {%       endif %}
 {%     endif %}
-{# {%   endif %} #}
+{%   endif %}
 {% endfor %}
+
+# {{ wg_if }}
+{% if "unmanaged_peers" in wg_if %}
+#
+# Unmanaged Peers
+#
+{%   for peer in wg_if["unmanaged_peers"] %}
+{%     set peer_config = wg_if["unmanaged_peers"][peer] %}
+
+# {{ peer }}
+[wireguard-peer.{{ peer_config["pubkey"] }}]
+{% if "endpoint" in peer_config and "port" in peer_config %}
+endpoint={{ peer_config["endpoint"] }}:{{ peer_config["port"] }}
+{% endif %}
+{% if "allowed_ips" in peer_config %}
+allowed-ips={{ peer_config["allowed_ips"] | join("; ") }};
+{% endif %}
+{% if "persistent_keepalive" in peer_config %}
+persistent-keepalive={{ peer_config["persistent_keepalive"] }}
+{% endif %}
+{% if "psk" in peer_config and peer_config["psk"] != false and peer_config["psk"] != "" %}
+preshared-key={{ peer_config["psk"] }}
+{%   if "psk_flag" in peer_config %}
+preshared-key-flags={{ peer_config["psk_flag"] }}
+{%   else %}
+preshared-key-flags=0
+{%   endif %}
+{% endif %}
+
+{%   endfor %}
+{% endif %}
 
 [ipv4]
 address1={{ wg_if.address }}

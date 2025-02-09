@@ -1,10 +1,32 @@
 ---
+- name: Preload config
+  ansible.builtin.set_fact:
+    __wg_if_config: "{{ wg_config[item] }}"
+
+- name: Check if conf already exists
+  ansible.builtin.stat:
+    path: "/etc/NetworkManager/system-connections/{{ item }}.nmconnection"
+  register: __wireguard_conf
+
+- name: Load conf if it already exists
+  ansible.builtin.slurp:
+    src: "/etc/NetworkManager/system-connections/{{ item }}.nmconnection"
+  register: __wireguard_conf_file
+  when:
+    - __wireguard_conf.stat.exists is true
+
+- name: Extract private key if conf already exists
+  ansible.builtin.set_fact:
+    __wg_gen_keys: false
+    __wg_if_config: "{{ __wg_if_config | combine({ 'private_key': __wireguard_conf_file.content | b64decode | regex_search('private-key=(.*)', '\\1') | first }) }}"
+  when:
+    - __wireguard_conf_file.content is defined
+
 - name: Check if private key already exists
   ansible.builtin.set_fact:
     __wg_gen_keys: true
-    __wg_if_config: "{{ wg_config[item] }}"
   when:
-    - '"private_key" not in wg_config[item]'
+    - '"private_key" not in __wg_if_config'
   
 - name: Generate private key
   ansible.builtin.command: "wg genkey"
@@ -14,7 +36,7 @@
     - wireguard_generate_keys
     - wireguard_configure
   when:
-    - __wg_gen_keys is defined
+    - __wg_gen_keys is defined and __wg_gen_keys is true
 
 - name: Register new private key
   ansible.builtin.set_fact:
@@ -23,7 +45,7 @@
     - wireguard_generate_keys
     - wireguard_configure
   when:
-    - __wg_gen_keys is defined
+    - __wg_gen_keys is defined and __wg_gen_keys is true
 
 - name: Derive public key
   ansible.builtin.command: "wg pubkey"
@@ -35,8 +57,6 @@
   tags:
     - wireguard_generate_keys
     - wireguard_configure
-  when:
-    - __wg_gen_keys is defined
 
 - name: Register public key
   ansible.builtin.set_fact:
@@ -44,8 +64,6 @@
   tags:
     - wireguard_generate_keys
     - wireguard_configure
-  when:
-    - __wg_gen_keys is defined
 
 - name: Save new configuration
   ansible.builtin.set_fact:
@@ -53,5 +71,3 @@
   tags:
     - wireguard_generate_keys
     - wireguard_configure
-  when:
-    - __wg_gen_keys is defined

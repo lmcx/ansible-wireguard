@@ -1,16 +1,16 @@
 ---
-- name: Get interface configuration
-  ansible.builtin.set_fact:
-    wg_if: "{{ wg_config[item] }}"
-    wg_if_name: "{{ item }}"
-  tags:
-    wireguard_configure
-
 - name: Set interface UUID
   ansible.builtin.set_fact:
     wg_config: "{{ wg_config | combine({item: wg_config[item] | combine({'uuid': item | to_uuid})}) }}"
   tags:
     wireguard_configure
+
+# - name: Get interface configuration
+#   ansible.builtin.set_fact:
+#     wg_if: "{{ wg_config[item] }}"
+#     wg_if_name: "{{ item }}"
+#   tags:
+#     wireguard_configure
 
 - name: Apply configuration template
   ansible.builtin.template:
@@ -19,5 +19,16 @@
     owner: "root"
     group: "root"
     mode: 0600
+  vars:
+    wg_if: "{{ wg_config[item] }}"
+    wg_if_name: "{{ item }}"
   tags:
     wireguard_configure
+
+- name: Save pubkey
+  local_action:
+    module: copy
+    content: "{{ wg_config[item]['public_key'] }}"
+    dest: "{{ item }}.pubkey"
+  become: false
+  when: wg_save_pubkeys is defined and wg_save_pubkeys is true
